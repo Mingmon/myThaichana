@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#FFB4B8">
+
+    <com.budiyev.android.codescanner.CodeScannerView
+        android:id="@+id/scanner_view"
+        android:layout_width="match_parent"
+        android:layout_height="245dp"
+        app:autoFocusButtonColor="#E91E63"
+        app:autoFocusButtonVisible="true"
+        app:flashButtonColor="#E91E63"
+        app:flashButtonVisible="true"
+        app:frameAspectRatioHeight="1"
+        app:frameAspectRatioWidth="1"
+        app:frameColor="#E91E63"
+        app:frameCornersRadius="20dp"
+        app:frameCornersSize="50dp"
+        app:frameSize="0.75"
+        app:frameThickness="2dp"
+        app:maskColor="#67FFB4B8" />
+
+    <TextView
+        android:id="@+id/show_place"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/big_padding"
+        android:fontFamily="sans-serif-light"
+        android:gravity="center"
+        android:hint="@string/hint_word"
+        android:minHeight="@dimen/min_height"
+        android:text="@string/please_scan"
+        android:textSize="18sp" />
+
+    <Button
+        android:id="@+id/button_save"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/big_padding"
+        android:background="#FFB4B8"
+        android:text="@string/check_in"
+        android:textColor="@color/buttonLabel"
+        app:backgroundTint="#51FFFFFF"
+        app:rippleColor="#FFFFFF" />
+
+</LinearLayout>

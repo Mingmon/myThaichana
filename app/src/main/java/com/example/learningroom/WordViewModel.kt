@@ -15,6 +15,8 @@ class WordViewModel(application: Application) : AndroidViewModel(application) {
 
     val allWords: LiveData<List<Word>>
 
+    val notcheckout: LiveData<List<Word>>
+
     init {
         val wordsDao = WordRoomDatabase.getDatabase(application).wordDao()
 
@@ -23,10 +25,17 @@ class WordViewModel(application: Application) : AndroidViewModel(application) {
         repository = WordRepository(wordsDao)
 
         allWords = repository.allWords
+
+        notcheckout = repository.notcheckout
+
+
+
     }
 
     fun insert(word: Word) = viewModelScope.launch(Dispatchers.IO ) {
         repository.insert(word)
     }
+
+
 
 }

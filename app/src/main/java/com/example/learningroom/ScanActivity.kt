@@ -15,7 +15,7 @@ import com.budiyev.android.codescanner.DecodeCallback
 import com.budiyev.android.codescanner.ErrorCallback
 import com.budiyev.android.codescanner.ScanMode
 
-class NewWordActivity : AppCompatActivity() {
+class ScanActivity : AppCompatActivity() {
 
     private lateinit var editWordView: TextView
 
@@ -26,7 +26,7 @@ class NewWordActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        setContentView(R.layout.activity_new_word)
+        setContentView(R.layout.activity_scan_check_in)
         editWordView = findViewById(R.id.show_place)
 
 
@@ -50,10 +50,13 @@ class NewWordActivity : AppCompatActivity() {
         // Callbacks
         codeScanner.decodeCallback = DecodeCallback {
             runOnUiThread {
-                Toast.makeText(this, "Scan result: ${it.text}", Toast.LENGTH_LONG).show()
+//                Toast.makeText(this, "Scan result: ${it.text}", Toast.LENGTH_LONG).show()
+                Toast.makeText(this, "Scan result: ${it.text.substringAfterLast("shopId=")}", Toast.LENGTH_LONG).show()
                 editWordView.text = "You Are At ${it.text}"
+//                it.text.substringAfterLast("shopId=")
             }
-            sctxt = it.text
+            sctxt = it.text.substringAfterLast("shopId=")
+
 
 
         }

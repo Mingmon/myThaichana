@@ -2,16 +2,32 @@ package com.example.learningroom
 
 import android.app.Activity
 import android.content.Intent
+import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
+import androidx.annotation.RequiresApi
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+
 import com.example.learningroom.Database.Word
+import com.example.learningroom.model.JsonPlaceHolderApi
+import com.example.learningroom.model.Merchant
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
+import kotlin.math.log
 
 class MainActivity : AppCompatActivity() {
 
@@ -25,7 +41,7 @@ class MainActivity : AppCompatActivity() {
 
         val fab = findViewById<FloatingActionButton>(R.id.fab)
         fab.setOnClickListener {
-            val intent = Intent(this@MainActivity, NewWordActivity::class.java)
+            val intent = Intent(this@MainActivity, ScanActivity::class.java)
             startActivityForResult(intent, 1)
         }
 
@@ -39,10 +55,10 @@ class MainActivity : AppCompatActivity() {
 
 
 
-/*        val recyclerView = findViewById<RecyclerView>(R.id.recyclerview)*/
+        val recyclerView = findViewById<RecyclerView>(R.id.recyclerviewMain)
         val adapter = WordListAdapter(this)
-//        recyclerView.adapter = adapter
-//        recyclerView.layoutManager = LinearLayoutManager(this)
+        recyclerView.adapter = adapter
+        recyclerView.layoutManager = LinearLayoutManager(this)
 //
         wordViewModel = ViewModelProvider(this).get(WordViewModel::class.java)
 
@@ -51,6 +67,7 @@ class MainActivity : AppCompatActivity() {
         })
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 
@@ -64,19 +81,65 @@ class MainActivity : AppCompatActivity() {
 
 
         val textView = findViewById<TextView>(R.id.textView2)
-        textView.text = tempHere
 
 
-        if (requestCode == newWordActivityRequestCode && resultCode == Activity.RESULT_OK) {
-            data?.getStringExtra(NewWordActivity.EXTRA_REPLY)?.let {
-                val word = Word(it)
-                wordViewModel.insert(word)
+        var realPlace = tempHere
+
+
+        val retrofit = Retrofit.Builder()
+            .addConverterFactory(GsonConverterFactory.create())
+            .baseUrl("https://api-customer.thaichana.com/shop/0001/")
+            .build()
+
+        val jsonPlaceHolderApi = retrofit.create(JsonPlaceHolderApi::class.java)
+
+        val mycall:Call<Merchant> = jsonPlaceHolderApi.getMerchant(tempHere!!)
+
+        mycall.enqueue(object :Callback<Merchant>{
+            override fun onFailure(call: Call<Merchant>, t: Throwable) {
+                Log.e("ERROR",t.message.toString())
             }
-        } else {
-            Toast.makeText(
-                applicationContext,
-                R.string.empty_not_saved,
-                Toast.LENGTH_LONG).show()
-        }
+
+            override fun onResponse(call: Call<Merchant>, response: Response<Merchant>) {
+
+
+                Log.i("tag","b4")
+
+                val shop :Merchant = response.body()!!
+
+                realPlace = shop.shopName
+
+                textView.text = realPlace
+
+                Log.i("tag",shop.shopName)
+
+                if (requestCode == newWordActivityRequestCode && resultCode == Activity.RESULT_OK) {
+                    data?.getStringExtra(ScanActivity.EXTRA_REPLY)?.let {
+//                val currentDateTime = LocalDateTime.now().toString()
+
+                        val current = LocalDateTime.now()
+                        val formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss ")
+                        val formatted = current.format(formatter)
+
+                        Log.i("tag",realPlace)
+                        val word = Word(realPlace!!,formatted)
+                        wordViewModel.insert(word)
+
+//                Log.i("tag",formatted)
+//                val word = Word(it,formatted)
+//                wordViewModel.insert(word)
+                    }
+                } else {
+                    Toast.makeText(
+                        applicationContext,
+                        R.string.empty_not_saved,
+                        Toast.LENGTH_LONG).show()
+                }
+
+            }
+        })
+
+
+
     }
 }

@@ -33,11 +33,12 @@
         android:id="@+id/textView2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="100dp"
-        android:text="PLEASE CHECK IN"
+        android:layout_marginTop="60dp"
+        android:text="CURRENT PLACE"
+        android:textColor="@color/colorAccent"
         android:textSize="45dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.487"
+        app:layout_constraintHorizontal_bias="0.492"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/u_r_at" />
 

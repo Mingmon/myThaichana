@@ -71,73 +71,97 @@ class MainActivity : AppCompatActivity() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 
-        var tempTitle = data?.getStringExtra("title")
-        var tempYear = data?.getStringExtra("year")
         var tempHere = data?.getStringExtra("here")
 
 
         val youAreAt = findViewById<TextView>(R.id.u_r_at)
-        youAreAt.visibility = View.VISIBLE
+//        youAreAt.visibility = View.VISIBLE
 
 
         val textView = findViewById<TextView>(R.id.textView2)
 
 
-        var realPlace = tempHere
 
 
-        val retrofit = Retrofit.Builder()
-            .addConverterFactory(GsonConverterFactory.create())
-            .baseUrl("https://api-customer.thaichana.com/shop/0001/")
-            .build()
-
-        val jsonPlaceHolderApi = retrofit.create(JsonPlaceHolderApi::class.java)
-
-        val mycall:Call<Merchant> = jsonPlaceHolderApi.getMerchant(tempHere!!)
-
-        mycall.enqueue(object :Callback<Merchant>{
-            override fun onFailure(call: Call<Merchant>, t: Throwable) {
-                Log.e("ERROR",t.message.toString())
-            }
-
-            override fun onResponse(call: Call<Merchant>, response: Response<Merchant>) {
-
-
-                Log.i("tag","b4")
-
-                val shop :Merchant = response.body()!!
-
-                realPlace = shop.shopName
-
-                textView.text = realPlace
-
-                Log.i("tag",shop.shopName)
-
-                if (requestCode == newWordActivityRequestCode && resultCode == Activity.RESULT_OK) {
-                    data?.getStringExtra(ScanActivity.EXTRA_REPLY)?.let {
+        if (requestCode == newWordActivityRequestCode && resultCode == Activity.RESULT_OK) {
+            data?.getStringExtra(ScanActivity.EXTRA_REPLY)?.let {
 //                val currentDateTime = LocalDateTime.now().toString()
+
+
+
+//                Log.i("tag",formatted)
+//                val word = Word(it,formatted)
+//                wordViewModel.insert(word)
+
+                var realPlace = ""
+
+
+
+                val retrofit = Retrofit.Builder()
+                    .addConverterFactory(GsonConverterFactory.create())
+                    .baseUrl("https://api-customer.thaichana.com/shop/0001/")
+                    .build()
+
+                val jsonPlaceHolderApi = retrofit.create(JsonPlaceHolderApi::class.java)
+
+                val mycall:Call<Merchant> = jsonPlaceHolderApi.getMerchant(tempHere!!)
+
+                mycall.enqueue(object :Callback<Merchant>{
+                    override fun onFailure(call: Call<Merchant>, t: Throwable) {
+                        Log.e("ERROR",t.message.toString())
+                    }
+
+                    override fun onResponse(call: Call<Merchant>, response: Response<Merchant>) {
+
+
+                        Log.i("tag","b4")
+
+                        val shop :Merchant = response.body()!!
+
+                        realPlace = shop.shopName
+
+//                        textView.text = realPlace
+
+                        Log.i("tag",shop.shopName)
 
                         val current = LocalDateTime.now()
                         val formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss ")
                         val formatted = current.format(formatter)
 
                         Log.i("tag",realPlace)
+
                         val word = Word(realPlace!!,formatted)
                         wordViewModel.insert(word)
 
-//                Log.i("tag",formatted)
-//                val word = Word(it,formatted)
-//                wordViewModel.insert(word)
+                        Log.i("tag","save")
+
+
+
                     }
-                } else {
-                    Toast.makeText(
-                        applicationContext,
-                        R.string.empty_not_saved,
-                        Toast.LENGTH_LONG).show()
-                }
+                })
+
+
+
+
+
+
+
+
+
+
 
             }
-        })
+        } else {
+            Toast.makeText(
+                applicationContext,
+                R.string.empty_not_saved,
+                Toast.LENGTH_LONG).show()
+
+            textView.text = "please scan again"
+        }
+
+
+
 
 
 

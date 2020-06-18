@@ -5,10 +5,32 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
+    <TextView
+        android:id="@+id/show_place"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/big_padding"
+        android:fontFamily="sans-serif-light"
+        android:gravity="center"
+        android:hint="@string/hint_word"
+        android:minHeight="@dimen/min_height"
+        android:text="@string/please_scan"
+        android:textSize="18sp"
+        android:visibility="gone" />
+
+    <Button
+        android:id="@+id/button_save"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/big_padding"
+        android:text="@string/check_in"
+        android:textColor="@color/buttonLabel"
+        android:visibility="gone" />
+
     <com.budiyev.android.codescanner.CodeScannerView
         android:id="@+id/scanner_view"
         android:layout_width="match_parent"
-        android:layout_height="245dp"
+        android:layout_height="419dp"
         app:autoFocusButtonColor="#E91E63"
         app:autoFocusButtonVisible="true"
         app:flashButtonColor="#E91E63"
@@ -20,26 +42,21 @@
         app:frameCornersSize="50dp"
         app:frameSize="0.75"
         app:frameThickness="2dp"
-        app:maskColor="#67FFB4B8" />
+        app:maskColor="#67FFB4B8">
+
+    </com.budiyev.android.codescanner.CodeScannerView>
 
     <TextView
-        android:id="@+id/show_place"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/big_padding"
+        android:background="@color/colorPrimary"
         android:fontFamily="sans-serif-light"
         android:gravity="center"
-        android:hint="@string/hint_word"
         android:minHeight="@dimen/min_height"
         android:text="@string/please_scan"
-        android:textSize="18sp" />
-
-    <Button
-        android:id="@+id/button_save"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="@dimen/big_padding"
-        android:text="@string/check_in"
-        android:textColor="@color/buttonLabel" />
+        android:textColor="@android:color/white"
+        android:textSize="18sp"
+        android:textStyle="bold" />
 
 </LinearLayout>

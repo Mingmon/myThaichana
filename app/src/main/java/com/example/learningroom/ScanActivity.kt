@@ -36,6 +36,9 @@ class ScanActivity : AppCompatActivity() {
 
         val scannerView = findViewById<CodeScannerView>(R.id.scanner_view)
 
+
+
+
         codeScanner = CodeScanner(this, scannerView)
 
         // Parameters (default values)
@@ -51,17 +54,24 @@ class ScanActivity : AppCompatActivity() {
         codeScanner.decodeCallback = DecodeCallback {
             runOnUiThread {
 //                Toast.makeText(this, "Scan result: ${it.text}", Toast.LENGTH_LONG).show()
-                Toast.makeText(this, "Scan result: ${it.text.substringAfterLast("shopId=")}", Toast.LENGTH_LONG).show()
+                Toast.makeText(this, "Checked In !", Toast.LENGTH_LONG).show()
                 editWordView.text = "You Are At ${it.text}"
 //                it.text.substringAfterLast("shopId=")
             }
             sctxt = it.text.substringAfterLast("shopId=")
 
+            val replyIntent = Intent()
+            if(TextUtils.isEmpty(editWordView.text)){
+                setResult(Activity.RESULT_CANCELED, replyIntent)
+            } else {
+                val word = editWordView.text.toString()
+                replyIntent.putExtra(EXTRA_REPLY, sctxt)
+                replyIntent.putExtra("here", sctxt)
+                setResult(Activity.RESULT_OK, replyIntent)
+            }
 
-
+            finish()
         }
-
-
 
 
         codeScanner.errorCallback = ErrorCallback { // or ErrorCallback.SUPPRESS
@@ -75,23 +85,38 @@ class ScanActivity : AppCompatActivity() {
             codeScanner.startPreview()
         }
 
-        val button =findViewById<Button>(R.id.button_save)
 
-        button.setOnClickListener {
-            val replyIntent = Intent()
-            if(TextUtils.isEmpty(editWordView.text)){
-                setResult(Activity.RESULT_CANCELED, replyIntent)
-            } else {
-                val word = editWordView.text.toString()
-                replyIntent.putExtra(EXTRA_REPLY, sctxt)
-                replyIntent.putExtra("title", "hi")
-                replyIntent.putExtra("year", "hello")
-                replyIntent.putExtra("here", sctxt)
-                setResult(Activity.RESULT_OK, replyIntent)
-            }
+//        if (sctxt != "hi"){
+//
+//            val replyIntent = Intent()
+//            if(TextUtils.isEmpty(editWordView.text)){
+//                setResult(Activity.RESULT_CANCELED, replyIntent)
+//            } else {
+//                val word = editWordView.text.toString()
+//                replyIntent.putExtra(EXTRA_REPLY, sctxt)
+//                replyIntent.putExtra("here", sctxt)
+//                setResult(Activity.RESULT_OK, replyIntent)
+//            }
+//
+//            finish()
+//
+//        }
 
-            finish()
-        }
+//        val button =findViewById<Button>(R.id.button_save)
+//
+//        button.setOnClickListener {
+//            val replyIntent = Intent()
+//            if(TextUtils.isEmpty(editWordView.text)){
+//                setResult(Activity.RESULT_CANCELED, replyIntent)
+//            } else {
+//                val word = editWordView.text.toString()
+//                replyIntent.putExtra(EXTRA_REPLY, sctxt)
+//                replyIntent.putExtra("here", sctxt)
+//                setResult(Activity.RESULT_OK, replyIntent)
+//            }
+//
+//            finish()
+//        }
     }
     companion object {
         const val EXTRA_REPLY = "com.example.android.wordlistsql.REPLY"

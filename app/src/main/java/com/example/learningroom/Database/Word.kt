@@ -16,7 +16,7 @@ data class Word(
     val datetime: String,
 
     @ColumnInfo(name = "checkout")
-    val checkout: String? = null
+    val checkout: String = "0"
 
 )
 

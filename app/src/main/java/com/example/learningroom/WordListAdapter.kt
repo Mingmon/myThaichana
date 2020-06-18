@@ -3,6 +3,7 @@ package com.example.learningroom
 import android.app.Activity
 import android.content.Context
 import android.os.Build
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,18 +11,17 @@ import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
 import androidx.annotation.RequiresApi
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
 import com.example.learningroom.Database.Word
 import com.example.learningroom.Database.WordRoomDatabase
+import kotlinx.android.synthetic.main.recyclerview_item.view.*
 import java.time.LocalDateTime
 
-class WordListAdapter internal constructor(
-    context: Context
-) : RecyclerView.Adapter<WordListAdapter.WordViewHolder>() {
+class WordListAdapter(val word:LiveData<List<Word>>,var clickListener: clickitemListener) : RecyclerView.Adapter<WordListAdapter.WordViewHolder>() {
 
 
-    private val inflater: LayoutInflater = LayoutInflater.from(context)
     private var words = emptyList<Word>()
 
     lateinit var wordViewModel: WordViewModel
@@ -29,6 +29,13 @@ class WordListAdapter internal constructor(
 
 
     inner class WordViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView){
+        fun initialize(item: Word,action: clickitemListener) {
+            itemView.button.setOnClickListener {
+                action.onItemClick(item,adapterPosition)
+            }
+
+        }
+
         val wordItemView: TextView = itemView.findViewById(R.id.textView)
         val dateTimeView: TextView = itemView.findViewById(R.id.datetime)
 
@@ -37,7 +44,7 @@ class WordListAdapter internal constructor(
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): WordViewHolder {
-        val itemView = inflater.inflate(R.layout.recyclerview_item, parent, false)
+        val itemView = LayoutInflater.from(parent.context).inflate(R.layout.recyclerview_item, parent, false)
 
         return WordViewHolder(itemView)
         //recyclerview_item ก็เตือตัวบน แต่อันนี้สร้างมั้ง เหมือนจับตัวบนยัดใส่รีไซเคิล หรอ
@@ -50,17 +57,36 @@ class WordListAdapter internal constructor(
         holder.wordItemView.text = current.word
         holder.dateTimeView.text = current.datetime
 
-        val checkoutTime = LocalDateTime.now().toString()
+        val currentWord  = holder.adapterPosition
 
-        holder.btn.setOnClickListener{
-            /*holder.wordItemView.visibility = View.GONE
-            holder.dateTimeView.visibility = View.GONE
-            holder.btn.visibility = View.GONE*/
+        holder.initialize(words.get(position),clickListener)
 
 
-//            val word = Word(current.word,current.datetime,checkoutTime)
-//            wordViewModel.insert(word)
-        }
+
+
+//       val checkoutTime = LocalDateTime.now().toString()
+
+//        holder.btn.setOnClickListener{
+////            holder.wordItemView.visibility = View.GONE
+////            holder.dateTimeView.visibility = View.GONE
+////            holder.btn.visibility = View.GONE
+//
+//            Log.i("tag",position.toString())
+//
+//
+//            Log.i("tag",current.checkout)
+//
+//
+//
+//            val word =  current.word
+//            wordViewModel.update(word)
+//
+//
+//
+//            notifyDataSetChanged()
+//
+//            Log.i("tag",current.checkout)
+//        }
     }
 
     internal fun setWords(words: List<Word>){
@@ -72,5 +98,11 @@ class WordListAdapter internal constructor(
 
 
 
+
+}
+
+interface clickitemListener {
+
+    fun onItemClick(iten:Word,position: Int)
 
 }

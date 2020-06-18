@@ -16,7 +16,7 @@ import kotlinx.android.synthetic.main.recyclerview_item.*
 import java.time.LocalDateTime
 
 
-class HistoryActivity : AppCompatActivity() {
+class HistoryActivity : AppCompatActivity(),clickitemListener {
 
     lateinit var wordViewModel: WordViewModel
 
@@ -29,11 +29,16 @@ class HistoryActivity : AppCompatActivity() {
         val clickBtn = findViewById<Button>(R.id.button)
 
         val recyclerView = findViewById<RecyclerView>(R.id.recyclerviewHistory)
-        val adapter = WordListAdapter(this)
-        recyclerView.adapter = adapter
-        recyclerView.layoutManager = LinearLayoutManager(this)
 
         wordViewModel = ViewModelProvider(this).get(WordViewModel::class.java)
+
+
+        val listUser = wordViewModel.notcheckout
+
+        val adapter = WordListAdapter(listUser,this)
+
+        recyclerView.adapter = adapter
+        recyclerView.layoutManager = LinearLayoutManager(this)
 
         wordViewModel.notcheckout.observe(this, Observer { words ->
             words?.let {
@@ -58,5 +63,9 @@ class HistoryActivity : AppCompatActivity() {
 //        }
 
 
+    }
+
+    override fun onItemClick(iten: Word, position: Int) {
+        Log.i("tag","clickedddddd")
     }
 }

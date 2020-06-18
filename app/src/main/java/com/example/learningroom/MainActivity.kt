@@ -11,6 +11,7 @@ import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
 import androidx.annotation.RequiresApi
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -29,7 +30,7 @@ import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import kotlin.math.log
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(),clickitemListener {
 
     private var newWordActivityRequestCode = 1
 
@@ -54,16 +55,24 @@ class MainActivity : AppCompatActivity() {
 
 
 
-
         val recyclerView = findViewById<RecyclerView>(R.id.recyclerviewMain)
-        val adapter = WordListAdapter(this)
+
+        wordViewModel = ViewModelProvider(this).get(WordViewModel::class.java)
+
+        Log.i("tag", wordViewModel.allWords.toString())
+
+        val listUser = wordViewModel.allWords
+
+        val adapter = WordListAdapter(listUser,this)
+
+        val adapter1 = listUser.let { WordListAdapter(it,this) }
+
         recyclerView.adapter = adapter
         recyclerView.layoutManager = LinearLayoutManager(this)
 //
-        wordViewModel = ViewModelProvider(this).get(WordViewModel::class.java)
 
         wordViewModel.allWords.observe(this, Observer { words ->
-            words?.let { adapter.setWords(it) }
+            words?.let { adapter.setWords(it)}
         })
     }
 
@@ -165,5 +174,10 @@ class MainActivity : AppCompatActivity() {
 
 
 
+    }
+
+    override fun onItemClick(iten: Word, position: Int) {
+        Log.i("tag","clickedddddd")
+        Log.i("tag",position.toString())
     }
 }
